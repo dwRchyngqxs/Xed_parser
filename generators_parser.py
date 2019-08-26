@@ -1,5 +1,6 @@
 from ply.lex import lex, TOKEN
 
+# store instruction info in a class rather than a long tuple
 class instruction_info:
 	def __init__(self, args):
 		self.uname, self.category, self.extension, self.pattern, self.operands, self.iform, self.version, \
@@ -8,22 +9,27 @@ class instruction_info:
 		for (k, v) in other.items():
 			setattr(self, k, v)
 
+# this lexer need states (cf flex/bison doc)
 states = (
 	('cond', 'inclusive'),
 	('arg', 'inclusive'),
 	('eat', 'exclusive')
 )
 
+# why would they do a description language as complicated
+# KISS please
 watch_a = False
 watch_access = False
 watch_rsf = False
 watch_flag = False
 watch_action = False
 
+# those are needed, think about parsing them first
 fields = {}
 state = {}
 widths = {}
 
+# reserved keywords depending on current lexer state
 a_s = {
 	'AGEN': 'AGEN',
 	'RELBR': 'RELBR',
@@ -48,6 +54,7 @@ accesses = {
 
 
 args = {'IMPL', 'SUPP', 'EXPL', 'ECOND'}
+# this also needs to be parsed first
 xtypes = {}
 
 
@@ -135,6 +142,7 @@ def t_OPERATOR(t):
 	t.type = operators.get(t.value, None)
 	return t
 
+# everything till the end of line or comment
 t_eat_EATER = r'[^\#\n]*(?=(?s:.))'
 
 id_chars = r'[^' + literals[:-1] + operator_chars + r'\s\\#-]'
@@ -653,6 +661,7 @@ def init(fl, st, ws, xt):
 from ply.yacc import yacc
 parser = yacc(tabmodule='generators_table')
 
+# parse every file and return the graph nodes
 def parse(files):
 	try:
 		file = open(files.__next__(), buffering=1)

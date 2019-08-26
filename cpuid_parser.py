@@ -4,7 +4,7 @@ from common_lex import make_lexer
 ##--------------------------------------------------------------------------------------------------------------------##
 
 start = 'content'
-
+# result is here
 cpuid = {}
 
 def p_content(p):

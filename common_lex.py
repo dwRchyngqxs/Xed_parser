@@ -1,3 +1,5 @@
+# A single lexer for almost all parsers, need ply to work
+
 from ply.lex import TOKEN, lex
 
 t_ignore_COMMENT = r'\#.*'
@@ -8,6 +10,9 @@ def t_NUMBER(t):
 	t.value = int(t.value, 0)
 	return t
 
+# make the ID rule
+# reserved are the reserved keywords
+# literals are the literals (cf ply doc)
 def make_identifier_token(reserved = {}, literals = ''):
 	@TOKEN(r'[^\s#' + literals + r']+')
 	def identifier_token(t):
@@ -20,6 +25,7 @@ def t_error(t):
 	print('lexer error', t)
 	return
 
+# build the lexer from the reserved keywords and literals
 def make_lexer(reserved = {}, literals = ''):
 	tokens = ['NUMBER', 'ID'] + list(reserved.values())
 	t_ID = make_identifier_token(reserved, literals)

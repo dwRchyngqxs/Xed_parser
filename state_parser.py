@@ -1,5 +1,6 @@
 from ply.lex import lex, TOKEN
 
+# cannot use literals because "! =" would be allowed
 operators = {
 	'=': 'EQ',
 	'!=': 'NE'
@@ -50,7 +51,7 @@ lexer = lex()
 ##--------------------------------------------------------------------------------------------------------------------##
 
 start = 'content'
-
+# result is here
 state = {}
 
 def p_content(p):

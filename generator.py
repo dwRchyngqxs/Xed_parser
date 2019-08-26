@@ -1,5 +1,8 @@
+# entry point, calls all parsers
+
 # enums = []
 
+# reading .cfg files
 import os
 import configs_parser
 for (dir, _, paths) in os.walk('datafiles'):
@@ -20,6 +23,7 @@ del configs['enc-instructions']
 
 ##--------------------------------------------------------------------------------------------------------------------##
 
+# reading "fields" files
 import fields_parser
 for file in configs['fields']:
 	with open(file, buffering=1) as f:
@@ -29,7 +33,7 @@ del configs['fields']
 fields = fields_parser.fields
 del fields_parser
 
-
+# reading "register" files, contains the register description
 import registers_parser
 for file in configs['registers']:
 	with open(file, buffering=1) as f:
@@ -37,6 +41,7 @@ for file in configs['registers']:
 			registers_parser.parse(line)
 del configs['registers']
 
+# Keeping the highest size of registers
 registers = {}
 for regl in registers_parser.registers.values():
 	min = (registers_parser.registers[regl[0][3][0]][0][2], regl[0])
@@ -47,7 +52,7 @@ for regl in registers_parser.registers.values():
 	registers[min[1][0]] = min[1][1:]
 del registers_parser
 
-
+# reading "widths" files, contains a translation of types like 'int' in terms of bit width
 import widths_parser
 for file in configs['widths']:
 	with open(file, buffering=1) as f:
@@ -57,7 +62,7 @@ del configs['widths']
 widths = widths_parser.widths
 del widths_parser
 
-
+# reading "extra-widths" files
 import extra_widths_parser
 for file in configs['extra-widths']:
 	with open(file, buffering=1) as f:
@@ -69,7 +74,7 @@ extra_widths_reg = extra_widths_parser.extra_widths_reg
 extra_widths_imm_const = extra_widths_parser.extra_widths_imm_const
 del extra_widths_parser
 
-
+# reading "element-type-base" files
 import element_type_base_parser
 for file in configs['element-type-base']:
 	with open(file, buffering=1) as f:
@@ -79,7 +84,7 @@ del configs['element-type-base']
 element_type_base = element_type_base_parser.element_type_base
 del element_type_base_parser
 
-
+# reading "element-types" files
 import element_types_parser
 for file in configs['element-types']:
 	with open(file, buffering=1) as f:
@@ -89,7 +94,7 @@ del configs['element-types']
 element_types = element_types_parser.element_types
 del element_types_parser
 
-
+# reading "pointer-names" files
 import pointer_names_parser
 for file in configs['pointer-names']:
 	with open(file, buffering=1) as f:
@@ -99,7 +104,7 @@ del configs['pointer-names']
 pointer_names = pointer_names_parser.pointer_names
 del pointer_names_parser
 
-
+# reading "state" files, an additionnal compression of the instruction graph
 import state_parser
 for file in configs['state']:
 	with open(file, buffering=1) as f:
@@ -109,13 +114,26 @@ del configs['state']
 state = state_parser.state
 del state_parser
 
-
+# reading the graph description of instructions
 from itertools import chain
 import generators_parser
 generators_parser.init(fields, state, widths, element_types)
 generators = generators_parser.parse(chain(configs['dec-spine'], configs['dec-patterns'], configs['dec-instructions']))
 del generators_parser
 del chain
+
+# TODO: extract flag registers & bits
+flag_regs = set()
+for (k, v) in generators.items():
+	if 'INSTRUCTIONS' in k:
+		# add_flags_register_operand_all
+	#rewrite_state_operands
+	#mark_operands_internal
+	# build_graph
+	# is_lookup_function <=> optimize_graph
+	# otherwise_ok <=> epsilon_label_graph
+	# is_lookup_function <=> collect_graph_enum_info & collect_tree_depth
+	# ...
 
 
 print('TODO: call_chipmodel')
@@ -144,11 +162,12 @@ del configs['conversion-table']
 
 
 print('TODO: ild_scanners')
+# lalr parser or this expression below?
 # configs['ild-scanners'] = {w[0] % {'xed_dir': '.'}: int(w[1]) for file in map(lambda file: filter(lambda x: len(x)==2, map(lambda line: \
 #	comment.sub('', line).strip().split(), open(file, buffering=1))), configs['ild-scanners']) for w in file}
 del configs['ild-scanners']
 
-
+# reading "cpuid" files
 import cpuid_parser
 for file in configs['cpuid']:
 	with open(file, buffering=1) as f:

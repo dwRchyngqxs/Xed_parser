@@ -4,9 +4,10 @@ from common_lex import make_lexer
 ##--------------------------------------------------------------------------------------------------------------------##
 
 start = 'content'
-
+# result is here
 registers = {}
 
+# register description is stored in a tuple
 def p_content(p):
 	'''content : ID ID width merp NUMBER hreg ID
 	           | ID ID width merp NUMBER hreg

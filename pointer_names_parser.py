@@ -4,7 +4,7 @@ from common_lex import make_lexer
 ##--------------------------------------------------------------------------------------------------------------------##
 
 start = 'content'
-
+# result is here
 pointer_names = []
 
 def p_content(p):

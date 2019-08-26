@@ -1,3 +1,5 @@
+# rewrite this file to parse a file rather than a line
+
 from common_lex import make_lexer
 (lexer, tokens) = make_lexer({
 	'clear': 'CLEAR',
@@ -16,6 +18,7 @@ import re
 start = 'content'
 
 __path = '.'
+# result is here
 configs = {}
 path_expand = re.compile(r'%[(].+?[)]')
 

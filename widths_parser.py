@@ -1,3 +1,4 @@
+# special lexer rules
 tokens = ['BITS', 'NUMBER', 'ID']
 
 def t_BITS(t):
@@ -10,6 +11,7 @@ def t_NUMBER(t):
 	t.value = 8*int(t.value, 0)
 	return t
 
+# rules common with the other lexers
 from common_lex import t_ignore_COMMENT, make_identifier_token, t_ignore, t_error
 
 t_ID = make_identifier_token()
@@ -21,7 +23,7 @@ lexer = lex()
 ##--------------------------------------------------------------------------------------------------------------------##
 
 start = 'content'
-
+# result is here
 widths = {}
 
 def p_content(p):
